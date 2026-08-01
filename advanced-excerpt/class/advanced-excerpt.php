@@ -53,6 +53,9 @@ class Advanced_Excerpt {
 		$this->plugin_base ='options-general.php?page=advanced-excerpt';
 
 		if ( isset($_SERVER['REQUEST_METHOD']) && 'POST' == $_SERVER['REQUEST_METHOD'] && isset( $_REQUEST['page'] ) && 'advanced-excerpt' === $_REQUEST['page'] ) {
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_die( __( 'You do not have sufficient permissions to manage options for this site.', 'advanced-excerpt' ) );
+			}
 			check_admin_referer( 'advanced_excerpt_update_options' );
 			$this->update_options();
 		}
@@ -389,7 +392,10 @@ class Advanced_Excerpt {
 		return trim( force_balance_tags( $out ) );
 	}
 
-	public function text_add_more( $text, $ellipsis, $read_more, $link_new_tab, $link_screen_reader ) {
+	public function text_add_more( $text, $ellipsis, $read_more, $link_new_tab, $link_screen_reader ) {		
+		
+		$ellipsis = esc_html( $ellipsis );
+		$read_more = wp_kses_data( $read_more );
 
 		if ( $read_more ) {
 
@@ -449,13 +455,13 @@ class Advanced_Excerpt {
 			$this->options[$checkbox_option] = ( isset( $_POST[$checkbox_option] ) ) ? 1 : 0;
 		}
 
-		$this->options['length_type'] = $_POST['length_type'];
-		$this->options['finish'] = $_POST['finish'];
-		$this->options['ellipsis'] = $_POST['ellipsis'];
-		$this->options['read_more'] = isset( $_POST['read_more'] ) ? $_POST['read_more'] : $this->options['read_more'];
-		$this->options['allowed_tags'] = ( isset( $_POST['allowed_tags'] ) ) ? array_unique( (array) $_POST['allowed_tags'] ) : array();
-		$this->options['exclude_pages'] = ( isset( $_POST['exclude_pages'] ) ) ? array_unique( (array) $_POST['exclude_pages'] ) : array();
-		$this->options['allowed_tags_option'] = $_POST['allowed_tags_option'];
+		$this->options['length_type'] = sanitize_text_field( $_POST['length_type'] );
+		$this->options['finish'] = sanitize_text_field( $_POST['finish'] );
+		$this->options['ellipsis'] = sanitize_text_field( $_POST['ellipsis'] );
+		$this->options['read_more'] = isset( $_POST['read_more'] ) ? sanitize_text_field( $_POST['read_more'] ) : $this->options['read_more'];
+		$this->options['allowed_tags'] = ( isset( $_POST['allowed_tags'] ) ) ? array_unique( array_map( 'sanitize_text_field', (array) $_POST['allowed_tags'] ) ) : array();
+		$this->options['exclude_pages'] = ( isset( $_POST['exclude_pages'] ) ) ? array_unique( array_map( 'sanitize_text_field', (array) $_POST['exclude_pages'] ) ) : array();
+		$this->options['allowed_tags_option'] = sanitize_text_field( $_POST['allowed_tags_option'] );
 
 		update_option( 'advanced_excerpt', $this->options );
 

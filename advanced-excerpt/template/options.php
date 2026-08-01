@@ -18,7 +18,7 @@
 							</label>
 						</th>
 						<td>
-							<input name="length" type="text" id="length" value="<?php echo $length; ?>" size="2" />
+							<input name="length" type="text" id="length" value="<?php echo esc_attr( $length ); ?>" size="2" />
 							<select name="length_type">
 								<option value="characters"<?php echo ( 'characters' == $length_type ) ? ' selected="selected"' : ''; ?>><?php _e( "Characters", 'advanced-excerpt' ); ?></option>
 								<option value="words"<?php echo ( 'words' == $length_type ) ? ' selected="selected"' : ''; ?>><?php _e( "Words", 'advanced-excerpt' ); ?></option>
@@ -33,7 +33,7 @@
 						</th>
 						<td>
 							<p>
-								<input name="ellipsis" type="text" id="ellipsis" value="<?php echo $ellipsis; ?>" size="5" />
+								<input name="ellipsis" type="text" id="ellipsis" value="<?php echo esc_attr( $ellipsis ); ?>" size="5" />
 								<?php printf( __( '(use <a href="%s" target="_blank">HTML entities</a>)', 'advanced-excerpt' ), 'http://entitycode.com' ); ?>
 							</p>
 							<p class="description"><?php _e( "Will substitute the part of the post that is omitted in the excerpt.", 'advanced-excerpt' ); ?></p>
@@ -76,7 +76,7 @@
 							<?php _e( "Add read more link to excerpt", 'advanced-excerpt' ); ?>
 							</label><br />
 
-							<input name="read_more" type="text" id="read-more" value="<?php echo $read_more; ?>" <?php echo ( 1 !== $add_link ) ? 'disabled="disabled"' : ''; ?> /><br>
+							<input name="read_more" type="text" id="read-more" value="<?php echo esc_attr( $read_more ); ?>" <?php echo ( 1 !== $add_link ) ? 'disabled="disabled"' : ''; ?> /><br>
 							
 							<ul class="sub-options">
 								<li>
